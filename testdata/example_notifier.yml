@@ -1,0 +1,7 @@
+websites:
+  google:
+    url: https://www.google.com
+notifiers:
+  shell: !Command
+    cmd: echo
+    args: ["bla", "bla"]

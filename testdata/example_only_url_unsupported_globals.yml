@@ -1,0 +1,5 @@
+globals:
+  unsupported: bla
+websites:
+  google:
+    url: https://www.google.com
