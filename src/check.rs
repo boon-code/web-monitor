@@ -13,12 +13,7 @@ pub struct WebsiteChecker {
 }
 impl WebsiteChecker {
     pub fn new(cfg: &config::Config) -> Self {
-        let targets = cfg.websites
-            .iter()
-            .filter_map(|(n, c)| {
-                Target::from_config(c, &cfg.global).ok()
-            })
-            .collect();
+        let targets = Self::collect_targets(cfg);
         Self {
             targets
         }
@@ -37,7 +32,19 @@ impl WebsiteChecker {
 
         set
     }
+
+    fn collect_targets(cfg: &config::Config) -> Vec<Target> {
+        cfg.websites
+            .iter()
+            .filter_map(|(n, c)| {
+                Target::from_config(n, c, &cfg.global)
+                    .ok()
+            })
+            .collect()
+    }
 }
+
+
 
 struct Target {
     url: Url,
@@ -45,7 +52,7 @@ struct Target {
     interval: Duration,
 }
 impl Target {
-    pub fn from_config(cfg: &config::Website, global: &config::Global) -> Result<Self> {
+    pub fn from_config(name: &str, cfg: &config::Website, global: &config::Global) -> Result<Self> {
         let url = Url::parse(&cfg.url)?;
         let method = parse_method(&cfg.method)?;
         let t_s = cfg.interval.unwrap_or(global.default_interval);
