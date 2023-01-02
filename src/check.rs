@@ -115,7 +115,8 @@ impl Target {
         warn!("{} is down", self.url);
     }
 
-    async fn check(&self) -> Result<()> {
+    async fn check(&self) -> Result<Duration> {
+        let t_start = Instant::now();
         let client = reqwest::ClientBuilder::new()
             .build()
             .expect("client");
@@ -126,13 +127,15 @@ impl Target {
             )
             .send()
             .await?;
+        let dt = Instant::now()
+            .duration_since(t_start);
         let status = r.status();
         if status != 200 {
             bail!("Url {} not reachable (status={})",
                   self.url, status);
         }
 
-        Ok(())
+        Ok(dt)
     }
 }
 
