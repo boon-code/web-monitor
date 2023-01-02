@@ -13,19 +13,19 @@ fn test_simple_parse() {
     let w = &cfg.websites["google"];
     assert_eq!(w.url, "https://www.google.com");
     assert!(w.interval.is_none());
-    assert_eq!(cfg.global.default_interval, 60000_u64);
+    assert_eq!(cfg.global.default_interval, 60_u64);
 }
 
 #[test]
 fn test_global_default_is_used_with_empty_globals() {
     let cfg = load_cfg("example_only_url_empty_globals.yml");
-    assert_eq!(cfg.global.default_interval, 60000_u64);
+    assert_eq!(cfg.global.default_interval, 60_u64);
 }
 
 #[test]
 fn test_unsupported_globals_are_ignored() {
     let cfg = load_cfg("example_only_url_unsupported_globals.yml");
-    assert_eq!(cfg.global.default_interval, 60000_u64);
+    assert_eq!(cfg.global.default_interval, 60_u64);
 }
 
 #[test]

@@ -34,7 +34,7 @@ pub struct Global {
 }
 impl Global {
     fn get_default_interval() -> u64 {
-        60_000_u64
+        60_u64
     }
 }
 impl Default for Global {
