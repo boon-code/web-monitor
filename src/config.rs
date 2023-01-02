@@ -74,13 +74,27 @@ pub struct Command {
 }
 
 #[derive(Serialize, Deserialize)]
+pub struct Telegram {
+    pub token: String,
+    pub chat: String,
+}
+
+#[derive(Serialize, Deserialize)]
 pub enum Notifier {
     Command(Command),
+    Telegram(Telegram),
 }
 impl Notifier {
     pub fn as_command(&self) -> Option<&Command> {
         match self {
             Self::Command(cmd) => Some(cmd),
+            _ => None,
+        }
+    }
+
+    pub fn as_telegram(&self) -> Option<&Telegram> {
+        match self {
+            Self::Telegram(tb) => Some(tb),
             _ => None,
         }
     }
