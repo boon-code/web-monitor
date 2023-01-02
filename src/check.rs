@@ -2,6 +2,7 @@ use reqwest::{self, ClientBuilder, Url, Method};
 use anyhow::{anyhow, bail, ensure, Context, Result};
 use tokio::time::{self, Duration, Instant};
 use super::config;
+use super::notifiers::{TargetInfo, ProxyNotifier};
 use log::{self, debug, info, warn};
 
 
@@ -50,6 +51,7 @@ struct Target {
     url: Url,
     method: Method,
     interval: Duration,
+    info: TargetInfo,
 }
 impl Target {
     pub fn from_config(name: &str, cfg: &config::Website, global: &config::Global) -> Result<Self> {
@@ -57,10 +59,12 @@ impl Target {
         let method = parse_method(&cfg.method)?;
         let t_s = cfg.interval.unwrap_or(global.default_interval);
         let interval = Duration::from_secs(t_s);
+        let info = TargetInfo::new(name, &cfg.url);
         let obj = Self {
             url,
             method,
             interval,
+            info,
         };
 
         Ok(obj)

@@ -3,6 +3,7 @@ use anyhow::{anyhow, bail, ensure, Context, Result};
 use tokio::{self, signal, task::JoinSet};
 use tokio::time::{self, Duration};
 mod config;
+mod notifiers;
 mod check;
 mod arguments;
 
