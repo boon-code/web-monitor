@@ -1,11 +1,10 @@
+use anyhow::{anyhow, bail, ensure, Context, Result};
+use serde::{Deserialize, Serialize};
+use serde_yaml;
+use std::collections::BTreeMap;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
-use std::collections::BTreeMap;
-use anyhow::{anyhow, bail, ensure, Context, Result};
-use serde::{Serialize, Deserialize};
-use serde_yaml;
-
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
@@ -30,17 +29,26 @@ impl Config {
 #[derive(Serialize, Deserialize)]
 pub struct Global {
     #[serde(default = "Global::get_default_interval")]
+    // Default polling interval to check the status of a website in seconds
     pub default_interval: u64,
+    #[serde(default = "Global::get_default_timeout")]
+    // Default timeoutfor requesting a website in milliseconds
+    pub default_timeout: u64,
 }
 impl Global {
     fn get_default_interval() -> u64 {
         60_u64
+    }
+
+    fn get_default_timeout() -> u64 {
+        10000_u64
     }
 }
 impl Default for Global {
     fn default() -> Self {
         Self {
             default_interval: Self::get_default_interval(),
+            default_timeout: Self::get_default_timeout(),
         }
     }
 }
@@ -53,6 +61,7 @@ pub struct Website {
     #[serde(default)]
     pub request: String,
     pub interval: Option<u64>,
+    pub timeout: Option<u64>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -99,7 +108,6 @@ impl Notifier {
         }
     }
 }
-
 
 #[cfg(test)]
 mod tests;

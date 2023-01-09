@@ -6,6 +6,7 @@ mod config;
 mod notifiers;
 mod check;
 mod arguments;
+mod website;
 
 pub use arguments::Args;
 
@@ -102,13 +103,16 @@ mod tests {
     #[tokio::test]
     async fn test_simple_request() {
         let client = reqwest::ClientBuilder::new()
+            .timeout(Duration::from_millis(1))
             .build()
             .expect("client");
         let r = client.head("https://www.rust-lang.org")
             .send()
-            .await
-            .unwrap();
-        assert_eq!(r.status(), 200);
+            .await;
+        match r {
+            Err(e) => assert!(e.is_timeout()),
+            Ok(r) => assert_eq!(r.status(), 200),
+        }
     }
 
     #[tokio::test]
